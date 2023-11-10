@@ -82,6 +82,10 @@ def main():
             system.packets_in_the_buffer -= 1
 
     print(system)
+    print(
+        f"| Mean : {system.get_mean(lambda_)} | "
+        f"Error rate : {system.get_error_rate()}"
+    )
 
 
 if __name__ == "__main__":
