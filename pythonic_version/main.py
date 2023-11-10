@@ -3,11 +3,12 @@ import numpy as np
 from models import Packet, SystemState
 from buffer import Buffer, BufferFull
 from event import EventTypesEnum, EventScheduler, NoMoreEvents
+from grapher import Grapher
 
 
 def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
     # Create the system
-    system = SystemState(packets_went_though_buffer=0, packets_lost=0)
+    system = SystemState(incomming_packets=0, packets_lost=0)
 
     # Create a new buffer instance of size k
     buffer = Buffer(size=k)
@@ -33,8 +34,8 @@ def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
 
         evt_count += 1
 
-        # print(evt)
-        # print(f"Buffer : {buffer}")
+        print(evt)
+        print(f"Buffer : {buffer}")
 
         if evt.type_ is EventTypesEnum.ARRIVAL:
             # Treat an arriving packet
@@ -45,15 +46,15 @@ def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
                 delay=np.random.exponential(1 / lambda_),
             )
 
+            # Increment the system counter
+            system.incomming_packets += 1
+
             # Create a new packet
             packet = Packet()
 
             # Add the packet to the buffer
             try:
                 buffer.add_packet(packet)
-
-                # Increment the system counters
-                system.packets_went_though_buffer += 1
 
                 # Create a new DEPARTURE event
                 evt_scheduler.add(
@@ -69,22 +70,48 @@ def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
             # Removes the first packet in the buffer
             packet = buffer.remove_first_packet()
 
-    # print(system)
-    # print(
-    #     f"| Mean : {system.get_mean(lambda_)} | "
-    #     f"Error rate : {system.get_error_rate()}"
-    # )
+    print(system)
+    print(
+        f"| Mean : {system.get_mean(lambda_)} | "
+        f"Error rate : {system.get_error_rate()}"
+    )
     return system
 
 
-if __name__ == "__main__":
-    for k in [1, 5, 10, 15, 20, 25, 30, 40, 50, 70, 100]:
-        system = run_iters(
-            lambda_=100,
-            mu=1000,
-            k=k,
-            max_evt=100,
-        )
+def graph():
+    grapher = Grapher()
 
-        error_rate = system.get_error_rate()
-        print(error_rate)
+    for k in [1, 5, 10, 15, 20, 25, 30, 40, 50, 70, 100]:
+        for lambda_ in [500, 700, 900, 1000, 1100, 1300]:
+            # Compute the mean error rate for the given parameters
+            error_rates = []
+            for _ in range(100):
+                system = run_iters(
+                    lambda_=lambda_,
+                    mu=1000,
+                    k=k,
+                    max_evt=200,
+                )
+                error_rates.append(system.get_error_rate())
+
+            mean_error = sum(error_rates) / len(error_rates)
+            grapher.add(lambda_, k, mean_error)
+
+    # Plot the graph
+    # grapher.plot_set_arrival_rate(lambda_=...)
+    # grapher.plot_set_buffer_size(k=...)
+
+
+def main():
+    system = run_iters(
+        lambda_=10,
+        mu=0.5,
+        k=10,
+        max_evt=1000,
+    )
+    print(f"Error rate : {system.get_error_rate()}")
+
+
+if __name__ == "__main__":
+    main()
+    # graph()
