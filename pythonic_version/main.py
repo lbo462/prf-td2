@@ -7,8 +7,8 @@ from event import EventTypesEnum, EventScheduler, NoMoreEvents
 
 def main():
     # Set parameters
-    MAX_EVENTS = 10
-    lambda_ = 1
+    MAX_EVENTS = 100
+    lambda_ = 10
     mu = 1
     k = 10
 
@@ -41,8 +41,17 @@ def main():
 
         evt_count += 1
 
+        print(evt)
+        print(f"Buffer : {buffer}")
+
         if evt.type_ is EventTypesEnum.ARRIVAL:
             # Treat an arriving packet
+
+            # Add a new event in the list
+            evt_scheduler.add(
+                type_=EventTypesEnum.ARRIVAL,
+                delay=np.random.exponential(1 / lambda_),
+            )
 
             # Create a new packet
             packet = Packet()
@@ -63,11 +72,6 @@ def main():
                 # If the buffer is full, update the system and create a new event
                 system.packets_lost += 1
 
-                evt_scheduler.add(
-                    type_=EventTypesEnum.ARRIVAL,
-                    delay=np.random.exponential(1 / lambda_),
-                )
-
         elif evt.type_ is EventTypesEnum.DEPARTURE:
             # Treat a departing packet
 
@@ -77,12 +81,7 @@ def main():
             # Decrement the system counter
             system.packets_in_the_buffer -= 1
 
-            # Create a new ARRIVAL event and add it to scheduler
-            evt_scheduler.add(
-                type_=EventTypesEnum.ARRIVAL, delay=np.random.exponential(1 / lambda_)
-            )
-
-        print(system)
+    print(system)
 
 
 if __name__ == "__main__":

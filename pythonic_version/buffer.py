@@ -37,3 +37,11 @@ class Buffer:
             raise BufferEmpty()
 
         return self.packets.pop(0)  # removes at first index
+
+    def __str__(self) -> str:
+        out = ""
+        for _ in range(self.max_size - self.amount_of_packets_in):
+            out += "[]"
+        for _ in range(self.amount_of_packets_in):
+            out += "[x]"
+        return out

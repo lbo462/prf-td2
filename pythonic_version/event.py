@@ -23,7 +23,7 @@ class Event:
     time: datetime  # time of the event
 
     def __str__(self) -> str:
-        return f"{self.type_.name}, {self.time}"
+        return f"> {self.type_.name}, {self.time}"
 
 
 class EventScheduler:
@@ -31,6 +31,11 @@ class EventScheduler:
 
     def __init__(self):
         self._events: List[Event] = []
+
+    @property
+    def sorted_events(self) -> List[Event]:
+        self._events.sort(key=lambda x: x.time)
+        return self._events
 
     def add(self, type_: EventTypesEnum, delay: float):
         now = datetime.now()
@@ -43,13 +48,12 @@ class EventScheduler:
         self._events.append(evt)
 
     def get_next(self) -> Optional[Event]:
-
         if not self._events:
             raise NoMoreEvents()
 
         now = datetime.now()
 
-        for e in self._events:
+        for e in self.sorted_events:
             if e.time <= now:
                 self._events.remove(e)
                 return e

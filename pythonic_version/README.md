@@ -19,3 +19,11 @@ source venv/bin/activate  # Linux
 ```shell
 pip install -r requirements.txt
 ```
+
+## Start script
+
+In the virtual env (`source venv/bin/activate`, see the requirements section)
+
+```shell
+python main.py
+```
