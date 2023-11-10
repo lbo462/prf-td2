@@ -29,9 +29,6 @@ class SystemState:
     # Total count of the packets that went though the buffer
     packets_went_though_buffer: int
 
-    # Amount of packets in the buffer at an instant T
-    packets_in_the_buffer: int
-
     # Amount of lost packets
     packets_lost: int
 
@@ -44,6 +41,5 @@ class SystemState:
     def __str__(self) -> str:
         return (
             f"| Packets went though buffer : {self.packets_went_though_buffer} | "
-            f"Packets in the buffer : {self.packets_in_the_buffer} | "
             f"Packets lost : {self.packets_lost} |"
         )

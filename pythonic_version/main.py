@@ -14,7 +14,7 @@ def main():
 
     # Create the system
     system = SystemState(
-        packets_went_though_buffer=0, packets_in_the_buffer=0, packets_lost=0
+        packets_went_though_buffer=0, packets_lost=0
     )
 
     # Create a new buffer instance of size k
@@ -61,7 +61,6 @@ def main():
                 buffer.add_packet(packet)
 
                 # Increment the system counters
-                system.packets_in_the_buffer += 1
                 system.packets_went_though_buffer += 1
 
                 # Create a new DEPARTURE event
@@ -77,9 +76,6 @@ def main():
 
             # Removes the first packet in the buffer
             packet = buffer.remove_first_packet()
-
-            # Decrement the system counter
-            system.packets_in_the_buffer -= 1
 
     print(system)
     print(
