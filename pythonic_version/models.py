@@ -26,20 +26,20 @@ class SystemState:
     Keep count on the packets states
     """
 
-    # Total count of the packets that went though the buffer
-    incomming_packets: int
+    # Total count of the packets that went through the buffer
+    incoming_packets: int
 
     # Amount of lost packets
     packets_lost: int
 
     def get_error_rate(self) -> float:
-        return self.packets_lost / self.incomming_packets
+        return self.packets_lost / self.incoming_packets
 
     def get_mean(self, lambda_: float) -> float:
         return (1 - self.get_error_rate()) * lambda_
 
     def __str__(self) -> str:
         return (
-            f"| Packets incomming : {self.incomming_packets} | "
+            f"| Packets incoming : {self.incoming_packets} | "
             f"Packets lost : {self.packets_lost} |"
         )

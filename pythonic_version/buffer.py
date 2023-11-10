@@ -41,7 +41,7 @@ class Buffer:
     def __str__(self) -> str:
         out = ""
         for _ in range(self.max_size - self.amount_of_packets_in):
-            out += "[]"
+            out += "[.]"
         for _ in range(self.amount_of_packets_in):
             out += "[x]"
         return out

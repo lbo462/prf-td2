@@ -33,7 +33,7 @@ class Grapher:
                 y.append(run.error_rate)
 
         if not x:
-            raise ValueError("No runs with k = {k}")
+            raise ValueError(f"No runs with k = {k}")
 
         _, ax = plt.subplots()
         ax.plot(x, y)
@@ -49,7 +49,7 @@ class Grapher:
                 y.append(run.error_rate)
 
         if not x:
-            raise ValueError("No runs with lambda = {lambda_}")
+            raise ValueError(f"No runs with lambda = {lambda_}")
 
         _, ax = plt.subplots()
         ax.plot(x, y)

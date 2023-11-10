@@ -8,7 +8,7 @@ from grapher import Grapher
 
 def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
     # Create the system
-    system = SystemState(incomming_packets=0, packets_lost=0)
+    system = SystemState(incoming_packets=0, packets_lost=0)
 
     # Create a new buffer instance of size k
     buffer = Buffer(size=k)
@@ -34,6 +34,7 @@ def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
 
         evt_count += 1
 
+        # print the event and the buffer state
         print(evt)
         print(f"Buffer : {buffer}")
 
@@ -47,7 +48,7 @@ def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
             )
 
             # Increment the system counter
-            system.incomming_packets += 1
+            system.incoming_packets += 1
 
             # Create a new packet
             packet = Packet()
@@ -68,7 +69,7 @@ def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
             # Treat a departing packet
 
             # Removes the first packet in the buffer
-            packet = buffer.remove_first_packet()
+            buffer.remove_first_packet()
 
     print(system)
     print(
@@ -78,17 +79,37 @@ def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
     return system
 
 
+def main():
+    system = run_iters(
+        lambda_=5,
+        mu=1,
+        k=10,
+        max_evt=1000,
+    )
+    print(f"Error rate : {system.get_error_rate()}")
+
+
 def graph():
     grapher = Grapher()
 
-    for k in [1, 5, 10, 15, 20, 25, 30, 40, 50, 70, 100]:
-        for lambda_ in [500, 700, 900, 1000, 1100, 1300]:
+    """
+    When trying to plot a curve for a static value of k or lambda,
+    it is highly recommanded to set the corresponding list to a single-value array
+    in order to same your precious time
+    """
+    k_list = [1, 5, 10, 15, 20, 25, 30, 40, 50, 70, 100]
+    lambda_list = [500, 700, 900, 1000, 1100, 1300]
+
+    amount_of_runs = 100
+
+    for k in k_list:
+        for lambda_ in lambda_list:
             # Compute the mean error rate for the given parameters
             error_rates = []
-            for _ in range(100):
+            for _ in range(amount_of_runs):
                 system = run_iters(
                     lambda_=lambda_,
-                    mu=1000,
+                    mu=50,
                     k=k,
                     max_evt=200,
                 )
@@ -98,20 +119,23 @@ def graph():
             grapher.add(lambda_, k, mean_error)
 
     # Plot the graph
+    """
+    Uncomment one of the following lines to display the graphs
+    and set a value to lambda or k (that was used in k_list of lambda_list)
+    
+    Multiple graphs can be plotted
+    """
     # grapher.plot_set_arrival_rate(lambda_=...)
     # grapher.plot_set_buffer_size(k=...)
 
 
-def main():
-    system = run_iters(
-        lambda_=10,
-        mu=0.5,
-        k=10,
-        max_evt=1000,
-    )
-    print(f"Error rate : {system.get_error_rate()}")
-
-
 if __name__ == "__main__":
+    """
+    The main() func runs a single iteration
+    The graph() runs multiple times to create a graph
+
+    Please check theses functions to have more details.
+    """
+
     main()
     # graph()

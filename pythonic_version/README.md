@@ -27,3 +27,21 @@ In the virtual env (`source venv/bin/activate`, see the requirements section)
 ```shell
 python main.py
 ```
+
+Please, take a great look at every comment in the code.
+They are essential in order to understand what's going on and what's this script does.
+
+Start reading the file `main.py` to start.
+
+The models are defined in `models.py`, `buffer.py` defines a buffer 
+and `event.py` is a bit more complex and defines an event scheduler that handles
+the different events that can occurs when running the simulation.
+
+---
+
+**The users on WSL should probably install the package `python3-tk` 
+to display the graphs with matplotlib.**
+
+```shell
+sudo apt-get install python3-tk
+```

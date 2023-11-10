@@ -2,7 +2,7 @@
 .idea/
 .fleet/
 
-venv/
+pythonic_version/venv/
 env/
 .venv/
 .env/
