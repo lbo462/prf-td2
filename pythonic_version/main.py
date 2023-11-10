@@ -5,17 +5,9 @@ from buffer import Buffer, BufferFull
 from event import EventTypesEnum, EventScheduler, NoMoreEvents
 
 
-def main():
-    # Set parameters
-    MAX_EVENTS = 100
-    lambda_ = 10
-    mu = 1
-    k = 10
-
+def run_iters(max_evt: int, lambda_: int, mu: int, k: int) -> SystemState:
     # Create the system
-    system = SystemState(
-        packets_went_though_buffer=0, packets_lost=0
-    )
+    system = SystemState(packets_went_though_buffer=0, packets_lost=0)
 
     # Create a new buffer instance of size k
     buffer = Buffer(size=k)
@@ -27,7 +19,7 @@ def main():
     evt_scheduler.add(type_=EventTypesEnum.ARRIVAL, delay=0)
 
     evt_count = 0
-    while evt_count < MAX_EVENTS:
+    while evt_count < max_evt:
         # Get the event
         try:
             evt = evt_scheduler.get_next()
@@ -41,8 +33,8 @@ def main():
 
         evt_count += 1
 
-        print(evt)
-        print(f"Buffer : {buffer}")
+        # print(evt)
+        # print(f"Buffer : {buffer}")
 
         if evt.type_ is EventTypesEnum.ARRIVAL:
             # Treat an arriving packet
@@ -77,12 +69,22 @@ def main():
             # Removes the first packet in the buffer
             packet = buffer.remove_first_packet()
 
-    print(system)
-    print(
-        f"| Mean : {system.get_mean(lambda_)} | "
-        f"Error rate : {system.get_error_rate()}"
-    )
+    # print(system)
+    # print(
+    #     f"| Mean : {system.get_mean(lambda_)} | "
+    #     f"Error rate : {system.get_error_rate()}"
+    # )
+    return system
 
 
 if __name__ == "__main__":
-    main()
+    for k in [1, 5, 10, 15, 20, 25, 30, 40, 50, 70, 100]:
+        system = run_iters(
+            lambda_=100,
+            mu=1000,
+            k=k,
+            max_evt=100,
+        )
+
+        error_rate = system.get_error_rate()
+        print(error_rate)
